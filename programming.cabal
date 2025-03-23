@@ -1,0 +1,51 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           programming
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/programming#readme>
+homepage:       https://github.com/isovector/programming#readme
+bug-reports:    https://github.com/isovector/programming/issues
+author:         Sandy Maguire
+maintainer:     sandy@sandymaguire.me
+copyright:      2025 Sandy Maguire
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/isovector/programming
+
+library
+  exposed-modules:
+      Checkers
+      Derivative
+      Monoids
+  other-modules:
+      Paths_programming
+  autogen-modules:
+      Paths_programming
+  hs-source-dirs:
+      src
+  default-extensions:
+      DerivingStrategies
+      DeriveAnyClass
+      DerivingVia
+      LambdaCase
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -fno-warn-orphans
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , checkers
+    , comonad
+    , free
+    , generic-arbitrary
+    , hspec
+  default-language: GHC2021
