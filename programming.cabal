@@ -27,6 +27,7 @@ library
   exposed-modules:
       Checkers
       Derivative
+      MerkleTree
       Monoids
   other-modules:
       Paths_programming
@@ -39,6 +40,7 @@ library
       DeriveAnyClass
       DerivingVia
       LambdaCase
+      TypeFamilies
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -fno-warn-orphans
   build-depends:
       QuickCheck
@@ -48,4 +50,5 @@ library
     , free
     , generic-arbitrary
     , hspec
+    , recursion-schemes
   default-language: GHC2021
