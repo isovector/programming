@@ -2,6 +2,7 @@
 
 module MerkleTree where
 
+import Hash
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH
 import Control.Comonad.Cofree
@@ -22,11 +23,6 @@ insert a (Branch l x r) =
 
 makeBaseFunctor [''Tree]
 
-
-data Hash
-
-instance Semigroup Hash
-instance Monoid Hash
 
 
 type Merkle f = Cofree (Base f) Hash

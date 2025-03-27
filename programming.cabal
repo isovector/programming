@@ -27,8 +27,10 @@ library
   exposed-modules:
       Checkers
       Derivative
+      Hash
       MerkleTree
       Monoids
+      Rope
   other-modules:
       Paths_programming
   autogen-modules:
