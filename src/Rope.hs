@@ -50,9 +50,13 @@ split (_ :< BranchF l@(lsz :< _) r) ix =
       let (top, bot) = split r $ ix - lsz
        in (l <> top, bot)
 
+cofreeCata :: forall f a x. Functor f => (a -> f x -> x) -> Cofree f a -> x
+cofreeCata f (a :< b) = f a $ fmap (cofreeCata @f f) b
+
 toStr :: Rope -> String
-toStr (_ :< LeafF str) = str
-toStr (_ :< BranchF l r) = toStr l <> toStr r
+toStr = cofreeCata $ \_ -> \case
+  LeafF str -> str
+  BranchF l r -> l <> r
 
 
 instance Semigroup Rope where
@@ -61,7 +65,7 @@ instance Semigroup Rope where
   l@(lsz :< _) <> r@(rsz :< _) = lsz + rsz :< BranchF l r
 
 instance Monoid Rope where
-  mempty = 0 :< LeafF ""
+  mempty = rope ""
 
 rope :: String -> Rope
 rope s = length s :< LeafF s
