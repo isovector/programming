@@ -1,6 +1,5 @@
 module GridPath where
 
-import Data.Functor
 import Data.Ord
 import Control.Comonad
 import Data.Foldable
@@ -31,16 +30,24 @@ neighbors (Grid g)
 move :: Int -> Int -> Grid a -> Grid a
 move x y g = getGrid (duplicate g) x y
 
-solution :: Ord a => Grid a -> Grid [a]
+sample :: Int -> Int -> Grid a -> a
+sample x y = extract . move x y
+
+follow :: Functor f => f (Int, Int) -> Grid a -> f a
+follow f g = fmap (\(x, y) -> sample x y g) f
+
+solution :: Ord a => Grid a -> Grid (Int, [a])
 solution g =
   kfix $ Grid $ \x y final ->
     let ns = extend neighbors g
-        dirs = extract $ move x y ns
-        choices = dirs <&> \(dx, dy) -> extract $ move dx dy final
-     in getGrid g x y :
-          case choices of
-            [] -> []
-            _ -> maximumBy (comparing length) choices
+        dirs = sample x y ns
+        choices = follow dirs final
+        here = sample x y g
+     in case choices of
+            [] -> (1, [here])
+            _ ->
+              let (len, path) = maximumBy (comparing fst) choices
+               in (len + 1, here : path)
 
 
 

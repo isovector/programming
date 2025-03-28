@@ -26,10 +26,14 @@ source-repository head
 library
   exposed-modules:
       Checkers
+      DelimBalancing
       Derivative
+      GridPath
       Hash
       MerkleTree
       Monoids
+      OptionParsing
+      ParenBalancing
       Rope
   other-modules:
       Paths_programming
