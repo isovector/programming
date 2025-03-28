@@ -2,58 +2,41 @@ module GridPath where
 
 import Data.Ord
 import Control.Comonad
+import Control.Comonad.Traced
 import Data.Foldable
 
-newtype Grid a = Grid
-  { getGrid :: Int -> Int -> a }
-  deriving stock Functor
+type Grid = (->) (Sum Int, Sum Int)
 
-instance ComonadApply Grid where
-  Grid f <@> Grid a = Grid $ \x y -> f x y (a x y)
-
-
-instance Comonad Grid where
-  extract g = getGrid g 0 0
-  duplicate (Grid g) = Grid $ \x0 y0 -> Grid $ \x y -> g (x + x0) (y + y0)
-
-neighbors :: Ord a => Grid a -> [(Int, Int)]
-neighbors (Grid g)
+neighbors :: Ord a => Grid a -> [(Sum Int, Sum Int)]
+neighbors g
   = fmap fst
-  $ filter ((> g 0 0) . snd)
-  $ fmap (\(x, y) -> ((x,y), g x y))
+  $ filter ((> trace (0, 0) g) . snd)
+  $ fmap (\xy -> (xy, trace xy g))
     [ ((-1), 0)
     , (1, 0)
     , (0, (-1))
     , (0, 1)
     ]
 
-move :: Int -> Int -> Grid a -> Grid a
-move x y g = getGrid (duplicate g) x y
-
-sample :: Int -> Int -> Grid a -> a
-sample x y = extract . move x y
-
-follow :: Functor f => f (Int, Int) -> Grid a -> f a
-follow f g = fmap (\(x, y) -> sample x y g) f
+sample :: (Functor f, ComonadTraced m w) => f m -> w a -> f a
+sample f g = fmap (\m -> trace m g) f
 
 solution :: Ord a => Grid a -> Grid (Int, [a])
 solution g =
-  kfix $ Grid $ \x y final ->
+  kfix $ \xy final ->
     let ns = extend neighbors g
-        dirs = sample x y ns
-        choices = follow dirs final
-        here = sample x y g
+        dirs = trace xy ns
+        choices = sample dirs final
+        here = trace xy g
      in case choices of
             [] -> (1, [here])
             _ ->
               let (len, path) = maximumBy (comparing fst) choices
                in (len + 1, here : path)
 
-
-
 test :: Grid Int
 test =
-    Grid $ \x y ->
+    \(Sum x, Sum y) ->
       case (0 <= x && x < w && 0 <= y && y < h) of
         True -> array !! y !! x
         False -> -99999
