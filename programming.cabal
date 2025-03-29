@@ -35,6 +35,7 @@ library
       OptionParsing
       ParenBalancing
       Rope
+      SimpleFinger
   other-modules:
       Paths_programming
   autogen-modules:
