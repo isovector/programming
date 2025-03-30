@@ -52,13 +52,12 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -fno-warn-orphans
   build-depends:
       QuickCheck
-    , adjunctions
     , base >=4.7 && <5
     , checkers
     , comonad
-    , distributive
     , free
     , generic-arbitrary
     , hspec
+    , lens
     , recursion-schemes
   default-language: GHC2021

@@ -28,6 +28,7 @@ dependencies:
 - generic-arbitrary
 - hspec
 - recursion-schemes
+- lens
 
 language: GHC2021
 

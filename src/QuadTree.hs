@@ -3,6 +3,7 @@
 
 module QuadTree where
 
+import Control.Lens hiding (ix)
 import Data.Foldable
 import Data.Maybe
 import Data.Semigroup (stimesMonoid)
@@ -73,6 +74,29 @@ data Ix n = Ix
   }
   deriving stock (Eq, Ord, Show)
 
+type Ix' :: Nat -> Type
+data Ix' n = Ix' Int Integer
+  deriving stock (Eq, Ord, Show)
+
+shiftoutl' :: Ix' sn -> Maybe (Bool, Ix' n)
+shiftoutl' (Ix' 0 _) = Nothing
+shiftoutl' (Ix' n ix) = Just (testBit ix n, Ix' (n - 1) ix)
+
+
+{-
+
+singleton' :: forall n m. Monoid m => Ix' n -> Ix' n -> m -> Quad n m
+singleton' x y m = fromMaybe (Cell m) $ do
+  (lr, x') <- shiftoutl' x
+  (tb, y') <- shiftoutl' y
+  pure $ case (tb, lr) of
+    (False, False) -> Four (singleton' x' y' m) mempty mempty mempty
+    (False, True) -> Four mempty (singleton' x' y' m) mempty mempty
+    (True, False) -> Four mempty  mempty (singleton' x' y' m) mempty
+    (True, True) -> Four mempty mempty mempty (singleton' x' y' m)
+
+-}
+
 
 
 
@@ -87,12 +111,17 @@ singleton x@(Ix (MSB_S _) _) y m =
         (True, False) -> Four mempty  mempty (singleton x' y' m) mempty
         (True, True) -> Four mempty mempty mempty (singleton x' y' m)
 
-set :: Ix n -> Ix n -> a -> Quad n a -> Quad n a
-set x y a q = liftA2 appEndo (singleton x y $ Endo $ const a) q
+qset :: Ix n -> Ix n -> a -> Quad n a -> Quad n a
+qset x y a q = liftA2 appEndo (singleton x y $ Endo $ const a) q
 
 
 getNaive :: Ix n -> Ix n -> Quad n a -> a
 getNaive x y q = fromJust $ getLast $ fold $ (singleton x y $ Last . Just) <*> q
+
+
+one :: Ix n -> Ix n -> Lens' (Quad n a) a
+one x y = lens (get x y) (flip $ qset x y)
+
 
 get :: Ix n -> Ix n -> Quad n a -> a
 get _ _ (Cell a) = a
