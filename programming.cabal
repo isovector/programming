@@ -30,6 +30,7 @@ library
       Derivative
       GridPath
       Hash
+      Life
       MerkleTree
       Monoids
       OptionParsing
