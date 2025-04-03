@@ -37,6 +37,7 @@ library
       ParenBalancing
       QuadTree
       Rope
+      SignalDelay
       SimpleFinger
   other-modules:
       Paths_programming
